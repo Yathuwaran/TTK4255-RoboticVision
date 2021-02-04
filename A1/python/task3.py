@@ -4,7 +4,7 @@ from common import rgb_to_gray, gaussian, central_difference, extract_edges
 
 threshold = 0.04
 sigma     = 1.5 
-filename  = "data/grid.jpg"
+filename  = "../data/grid.jpg"
 
 I_rgb      = plt.imread(filename)
 I_rgb      = I_rgb/255.0
@@ -33,5 +33,5 @@ axes[2].set_title('Gradient in y')
 axes[3].set_title('Gradient magnitude')
 axes[4].set_title('Extracted edges')
 plt.tight_layout()
-plt.savefig('figures/out_edges.png') # Uncomment to save figure to working directory
+plt.savefig('../figures/out_edges.png') # Uncomment to save figure to working directory
 plt.show()
