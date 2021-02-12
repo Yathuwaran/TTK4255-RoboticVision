@@ -44,20 +44,19 @@ def decompose_H(H):
     r1 = H[:, 0] / k
     r2 = H[:, 1] / k
     r3 = np.cross(r1, r2)
-    # Extract translation vector
+    # translation vector
     t = H[:, 2] / k
     T1[0:3, 0:4] = np.column_stack((r1, r2, r3, t))
 
-    # Extract rotation
+    # rotation
     r1 = H[:, 0] / -k
     r2 = H[:, 1] / -k
     r3 = np.cross(r1, r2)
-    # Extract translation vector
+    # translation vector
     t = H[:, 2] / -k
     T2[0:3, 0:4] = np.column_stack((r1, r2, r3, t))
 
-    T1 = np.eye(4) # Placeholder, replace with your implementation
-    T2 = np.eye(4)
+   
 
     return T1, T2
 
