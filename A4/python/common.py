@@ -27,7 +27,7 @@ def estimate_H(xy, XY):
 
     #Solve Ah = 0 using SVD (Single-value-decomposition)
 
-    _,_,V = np.linalg.svd(A, full_matrices = True, compute_uv=True)
+    _,_,V = np.linalg.svd(A) # U and S not needed
     V = V.T
     h = V[:,-1] # Last column of V
     H = np.reshape(h,[3,3])
@@ -36,33 +36,42 @@ def estimate_H(xy, XY):
 
 def decompose_H(H):
     # Tip: Use np.linalg.norm to compute the Euclidean length
-
-    T1 = np.eye(4) # Placeholder, replace with your implementation
-    T2 = np.eye(4) # Placeholder, replace with your implementation
-
+    T1 = np.eye(4)
+    T2 = np.eye(4)
     k = np.linalg.norm(H[:, 0])
+    #rotation T1
     r1 = H[:, 0] / k
     r2 = H[:, 1] / k
     r3 = np.cross(r1, r2)
-    # translation vector
+    # translation T1
     t = H[:, 2] / k
-    T1[0:3, 0:4] = np.column_stack((r1, r2, r3, t))
+    T1[:3,:4] = np.column_stack((r1, r2, r3, t))
+    T1[:3,:3] = closest_rotation_matrix(np.column_stack((r1, r2, r3)))
 
-    # rotation
+    # rotation T2
     r1 = H[:, 0] / -k
     r2 = H[:, 1] / -k
     r3 = np.cross(r1, r2)
-    # translation vector
+    # translation T2
     t = H[:, 2] / -k
-    T2[0:3, 0:4] = np.column_stack((r1, r2, r3, t))
-
-   
+    T2[:3,:4] = np.column_stack((r1, r2, r3, t))
+    T2[:3,:3] = closest_rotation_matrix(np.column_stack((r1, r2, r3)))
 
     return T1, T2
 
+def determine_pose(T1, T2):
+    z_translation = T1[2,3]
+    if(z_translation>=0):
+        return T1
+    return T2
+
 
 def closest_rotation_matrix(Q):
-    R = Q # Placeholder
+    U,S,V = np.linalg.svd(Q)
+    R = U@np.diag(S)@V #V is already transposed, so there is no need to transpose again
+    print(np.linalg.det(Q)) #Quantify how the properties are satisfied
+    print(np.linalg.det(R)) #Quantify how the properties are satisfied
+    
     return R
 
 def project(K, X):

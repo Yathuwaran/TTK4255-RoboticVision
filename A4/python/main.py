@@ -34,8 +34,7 @@ for image_number in [4]: # Use this to run on a single image
     
     xy = np.linalg.inv(K)@uv
     xy = xy/xy[2,:]
-    print(XY.shape, xy.shape)
-    #print(xy[3,0])          # TASK: Compute calibrated image coordinates
+    
     H = estimate_H(xy.T, XY[:, valid].T)   # TASK: Implement this function
     uv_hat = (K@H@XY)
     
@@ -43,7 +42,9 @@ for image_number in [4]: # Use this to run on a single image
     
     T1,T2 = decompose_H(H) # TASK: Implement this function
 
-    T = T1 # TASK: Choose solution (try both T1 and T2 for Task 3.1, but choose automatically for Task 3.2)
+  
+
+    T = determine_pose(T1, T2) # TASK: Choose solution (try both T1 and T2 for Task 3.1, but choose automatically for Task 3.2)
     error = reprojection_error(uv, uv_from_H.T)
     print("Max error: ", np.max(error))
     print("Min error: ", np.min(error))
